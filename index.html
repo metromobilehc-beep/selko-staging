@@ -1998,14 +1998,14 @@ function initCollapsiblePanels() {
 initCollapsiblePanels();
 
 // ══ CONFIG ══
-const SUPABASE_URL      = 'https://zxserlkhwkfoqiepurdr.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2VybGtod2tmb3FpZXB1cmRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0NDM1NDIsImV4cCI6MjA5NjAxOTU0Mn0.cA9LJSn5t4sIbIemdQGQsdwtQFwb-6Q9xIZi48UYq34';
+const SUPABASE_URL      = 'https://kokmssjkehmhjxmnauuu.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Mhe7KkN2d3wcRiknvTJ7dA_MADECaur';
 const STORAGE_BUCKET    = 'compliance-documents';
 // ── EMAILJS CONFIG (same account/template used across Selko apps) ──
 const EMAILJS_SERVICE_ID  = 'service_wnhqs7e';
 const EMAILJS_TEMPLATE_ID = 'template_gq1z2x6';
 const EMAILJS_PUBLIC_KEY  = 'kc6pC-rqwD0xph-A0';
-const CRED_TOOL_URL = 'https://cred.selko360.com';
+const CRED_TOOL_URL = 'https://staging.selko360.com'; // local-only staging — this URL is a placeholder, not actually deployed anywhere
 
 // Shared cookie-based storage (scoped to .selko360.com, the parent domain)
 // replaces the previous localStorage-only session, and 'selko-shared-auth'
@@ -2014,7 +2014,7 @@ const CRED_TOOL_URL = 'https://cred.selko360.com';
 // established in either app now becomes visible to both, since it's no
 // longer isolated to one subdomain's localStorage under one app's own key.
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { storageKey: 'selko-shared-auth', storage: window.selkoSharedAuthStorage }
+  auth: { storageKey: 'selko-staging-auth' }
 });
 
 // ══ STATE ══
@@ -2179,7 +2179,7 @@ async function forgotPassword() {
   // temp password directly and emails it from Selko via Resend instead,
   // matching that same already-working, already-reliable pattern.
   try {
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/forgot-password-selko', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/forgot-password-selko', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.trim() }),
@@ -5522,7 +5522,7 @@ async function handleAddStaffCvFile(input) {
     if (!file.type && file.name.toLowerCase().endsWith('.pdf')) mediaType = 'application/pdf';
 
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/parse-provider-cv', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/parse-provider-cv', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({ fileBase64: base64, mediaType, fileName: file.name }),
@@ -5570,7 +5570,7 @@ async function handleCvImportFile(staffId, staffName) {
     if (!file.type && file.name.toLowerCase().endsWith('.pdf')) mediaType = 'application/pdf';
 
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/parse-provider-cv', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/parse-provider-cv', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({ fileBase64: base64, mediaType, fileName: file.name }),
@@ -5866,7 +5866,7 @@ async function saveFullProfileSheet(staffId) {
   if (updated?.profile_id && newStaffType !== before.staff_type) {
     try {
       const { data: { session } } = await sb.auth.getSession();
-      const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/sync-staff-role-ts', {
+      const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/sync-staff-role-ts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
         body: JSON.stringify({
@@ -5920,7 +5920,7 @@ async function submitEnterSsn(staffId) {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/encrypt-staff-ssn-ts', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/encrypt-staff-ssn-ts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}`, 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify({ staff_id: staffId, ssn }),
@@ -5978,7 +5978,7 @@ async function submitRevealSsn(staffId) {
   btn.textContent = 'Verifying...';
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/reveal-staff-ssn-ts', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/reveal-staff-ssn-ts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}`, 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify({ staff_id: staffId, justification }),
@@ -6047,7 +6047,7 @@ async function submitEnterCaqhCred(staffId) {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/encrypt-caqh-credentials', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/encrypt-caqh-credentials', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}`, 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify({
@@ -6113,7 +6113,7 @@ async function submitRevealCaqhCred(staffId) {
   btn.textContent = 'Verifying...';
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/reveal-caqh-credentials', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/reveal-caqh-credentials', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}`, 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify({ staff_id: staffId, justification }),
@@ -6752,7 +6752,7 @@ async function confirmStaffTypeCred(id, name) {
   if (updated?.profile_id) {
     try {
       const { data: { session } } = await sb.auth.getSession();
-      const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/sync-staff-role-ts', {
+      const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/sync-staff-role-ts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
         body: JSON.stringify({
@@ -6796,7 +6796,7 @@ async function lookupNpi(staffId, fullName, licenseState) {
   toast('Searching the public NPI registry...');
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/lookup-npi', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/lookup-npi', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({ firstName, lastName, state: licenseState || undefined }),
@@ -6850,7 +6850,7 @@ async function applyNpiResult(staffId, npi) {
 async function sendMissingDocsChecklist(staffId, fullName) {
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/send-missing-document-reminders', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/send-missing-document-reminders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -6924,7 +6924,7 @@ async function resetPassword(email, fullName, staffId) {
   const actualRole = staffRecord?.staff_type === 'admin' ? 'admin' : (staffRecord?.staff_type === 'office' ? 'office' : 'staff');
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -7046,7 +7046,7 @@ async function scanCredential() {
     else if (file.name.endsWith('.pdf')) mediaType = 'application/pdf';
 
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/scan-credential', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/scan-credential', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -8896,7 +8896,7 @@ async function openBillingPortal() {
   errEl.style.display = 'none';
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/create-portal-session', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/create-portal-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({ company_id: currentCompany.id }),
@@ -8916,7 +8916,7 @@ async function verifyStripeBilling() {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/verify-stripe-billing', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/verify-stripe-billing', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({ company_id: currentCompany.id }),
@@ -8962,7 +8962,7 @@ async function startCheckout() {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/create-checkout-session', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({ company_id: currentCompany.id, doc_tier: docTier || null, cred_tier: credTier || null }),
@@ -10174,7 +10174,7 @@ async function sendPartnerInvite(id, name, email) {
   const tempPassword = generateTempPassword();
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({
@@ -10216,7 +10216,7 @@ async function resetPartnerPassword(id, name, email) {
   const tempPassword = generateTempPassword();
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({
@@ -10969,7 +10969,7 @@ async function startTemplateUploadFromUrl() {
     const { data: { session } } = await sb.auth.getSession();
     if (!session?.access_token) throw new Error('Your session isn\'t ready yet — try refreshing the page and signing in again.');
 
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/fetch-credentialing-form-ts', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/fetch-credentialing-form-ts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -13358,7 +13358,7 @@ async function saveSetDemoPassword(companyId) {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({
@@ -13891,7 +13891,7 @@ function hideAddCompany() {
 async function sendAdminInvite(companyId, adminName, email) {
   const tempPassword = generateTempPassword();
   const { data: { session } } = await sb.auth.getSession();
-  const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+  const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
     body: JSON.stringify({
@@ -14050,7 +14050,7 @@ async function superInvite() {
   const tempPassword = generateTempPassword();
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({
@@ -14124,7 +14124,7 @@ async function setupStaffLogin(staffId, fullName, email) {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -14183,7 +14183,7 @@ async function setupStaffLoginNoEmail(staffId, fullName) {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({
@@ -14231,7 +14231,7 @@ async function resetPasswordNoEmail(staffId, fullName) {
 
   try {
     const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('https://zxserlkhwkfoqiepurdr.supabase.co/functions/v1/set-user-password', {
+    const res = await fetch('https://kokmssjkehmhjxmnauuu.supabase.co/functions/v1/set-user-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({
